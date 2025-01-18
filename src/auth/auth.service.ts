@@ -6,7 +6,7 @@ import {
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { verify } from 'argon2';
 
 @Injectable()
@@ -100,5 +100,14 @@ export class AuthService {
       secure: true,
       sameSite: 'none',
     });
+  }
+
+  isAuth(req: Request) {
+    const token = req.cookies[this.REFRESH_TOKEN_NAME];
+    if (token) {
+      return { ok: true };
+    } else {
+      return { ok: false };
+    }
   }
 }

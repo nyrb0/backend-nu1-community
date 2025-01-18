@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
@@ -39,7 +40,6 @@ export class AuthController {
   ) {
     const refreshTokenFromCookies =
       req.cookies[this.authService.REFRESH_TOKEN_NAME];
-
     if (!refreshTokenFromCookies) {
       this.authService.removeRefreshTokenFromResponse(res);
       throw new UnauthorizedException('Refresh token not passed');
@@ -58,5 +58,11 @@ export class AuthController {
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
     this.authService.removeRefreshTokenFromResponse(res);
+  }
+
+  @HttpCode(200)
+  @Get('check')
+  async cheachAuth(@Req() req: Request) {
+    return this.authService.isAuth(req);
   }
 }
