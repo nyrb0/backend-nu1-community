@@ -11,7 +11,7 @@ import { verify } from 'argon2';
 
 @Injectable()
 export class AuthService {
-  EXPIRE_DAY_REFRESH_TOKEN = 1;
+  EXPIRE_DAY_REFRESH_TOKEN = 7;
   REFRESH_TOKEN_NAME = 'refreshToken';
 
   constructor(
@@ -76,6 +76,7 @@ export class AuthService {
     const refreshToken = this.jwt.sign(data, {
       expiresIn: '7d',
     });
+
     return { accessToken, refreshToken };
   }
 
