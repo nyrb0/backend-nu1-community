@@ -16,10 +16,6 @@ export class PostDto {
 
   @IsInt()
   @IsOptional()
-  likes: number = 0;
-
-  @IsInt()
-  @IsOptional()
   views: number = 0;
 
   @IsArray()

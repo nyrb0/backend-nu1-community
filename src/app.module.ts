@@ -7,9 +7,10 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { LikeModule } from './like/like.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot(), UserModule, PostModule, LikeModule],
+  imports: [AuthModule, ConfigModule.forRoot(), UserModule, PostModule, LikeModule, CommentModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
