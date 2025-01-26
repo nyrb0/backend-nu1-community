@@ -6,14 +6,14 @@ export class LikeService {
   constructor(private prisma: PrismaService) {}
 
   async updateLikeCount(publicationId: string) {
-    const countsLike = await this.prisma.like.count({
+    const countLike = await this.prisma.like.count({
       where: { publicationId },
     });
     await this.prisma.publication.update({
       where: { id: publicationId },
-      data: { countLike: countsLike },
+      data: { countLike },
     });
-    return { message: 'Like count updated', count: countsLike };
+    return { message: 'Like count updated', count: countLike };
   }
 
   async likePost(userId: string, publicationId: string) {

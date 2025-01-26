@@ -14,6 +14,9 @@ export class PostService {
       include: {
         user: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 

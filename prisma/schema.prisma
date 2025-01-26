@@ -15,6 +15,7 @@ model User {
   password    String
   name        String? 
   lastName    String? @map("last_name")
+  
 
   email       String?  
   identification Boolean @default(false)
