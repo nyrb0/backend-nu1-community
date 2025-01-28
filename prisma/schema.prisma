@@ -15,6 +15,7 @@ model User {
   password    String
   name        String? 
   lastName    String? @map("last_name")
+  avatarUrl      String?  @map("avatar_url")
   
 
   email       String?  
