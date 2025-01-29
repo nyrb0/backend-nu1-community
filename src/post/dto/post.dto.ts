@@ -18,9 +18,10 @@ export class PostDto {
   @IsOptional()
   views: number = 0;
 
-  @IsArray()
-  @IsString({ each: true })
-  imageUrl: string[];
+  // @IsString({ each: true })
+  // @IsArray()
+  // @IsString()
+  // imageUrl: string;
 
   @IsInt()
   @IsOptional()
