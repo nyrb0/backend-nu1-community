@@ -47,4 +47,11 @@ export class LikeService {
       },
     });
   }
+
+  async hasLikedUserPost(userId: string, publicationId: string) {
+    const isLike = await this.prisma.like.findFirst({
+      where: { userId, publicationId },
+    });
+    return !!isLike;
+  }
 }

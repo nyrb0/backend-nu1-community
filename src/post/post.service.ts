@@ -45,6 +45,11 @@ export class PostService {
         user: {
           connect: { id: userId },
         },
+        mentions: {
+          create: (dto.mentions ?? []).map((username) => ({
+            user: { connect: { username } },
+          })),
+        },
       },
       include: {
         user: {
@@ -55,6 +60,7 @@ export class PostService {
             name: true,
             lastName: true,
             avatarUrl: true,
+            mentions: true,
           },
         },
       },

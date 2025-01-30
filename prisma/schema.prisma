@@ -28,6 +28,7 @@ model User {
 
   publication  Publication[] 
 
+  mentions Mention[]
   @@map("user")
 }  
 
@@ -52,16 +53,14 @@ model Publication {
   user        User @relation(fields: [userId],references: [id])
   userId      String @map("user_id")
 
-  tags Tag[]
-
+  mentions Mention[]
   @@map("publication")
 }
 
-model Tag {
-  id       String @id @default(uuid())
-  username  String 
-  name      String?
-  lastName  String?  @map("last_name")
+model Mention {
+  id       String @id  @default(cuid())
+  user  User @relation(fields: [userId],references: [id]) 
+  userId String
   publication Publication @relation(fields: [publicationId],references: [id])
   publicationId String @map("publication_id")
 }
@@ -75,7 +74,7 @@ model Like {
   
   user User @relation(fields: [userId],references: [id])
   userId String @map("user_id")
-  
+
   createdAt DateTime @default(now()) @map("created_at")
   @@unique([publicationId, userId]) 
   @@map("likes")
@@ -83,7 +82,6 @@ model Like {
 
 model Comments {
   id String @id @default(cuid())
-
   user User @relation(fields: [userId],references: [id])
   userId String @map("user_id")
   text String 
@@ -93,9 +91,6 @@ model Comments {
   createdAt DateTime @default(now()) @map("created_at")
   @@map("comments")
 }
-
-
-
 enum Visibility {
   PUBLIC     
   FRIENDS     

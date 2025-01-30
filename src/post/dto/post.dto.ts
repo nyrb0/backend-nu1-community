@@ -30,6 +30,10 @@ export class PostDto {
   @IsEnum(Visibility)
   @IsOptional()
   visibility: Visibility = Visibility.PUBLIC;
+
+  @IsArray()
+  @IsOptional()
+  mentions?: string[];
 }
 
 export class UpdatePublicationDto {
