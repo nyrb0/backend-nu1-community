@@ -11,7 +11,7 @@ export class PostService {
   ) {}
 
   async getAll(userId: string) {
-    return await this.prisma.publication.findMany({
+    const posts = await this.prisma.publication.findMany({
       where: {
         userId,
       },
@@ -25,11 +25,20 @@ export class PostService {
             lastName: true,
           },
         },
+        likes: {
+          where: { userId },
+          select: { id: true },
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return posts.map((post) => ({
+      ...post,
+      liked: post.likes.length > 0,
+    }));
   }
 
   async postCreate(dto: PostDto, userId: string, file?: Express.Multer.File) {
