@@ -8,9 +8,10 @@ import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { LikeModule } from './like/like.module';
 import { CommentModule } from './comment/comment.module';
+import { SavedModule } from './saved/saved.module';
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot(), UserModule, PostModule, LikeModule, CommentModule],
+  imports: [AuthModule, ConfigModule.forRoot(), UserModule, PostModule, LikeModule, CommentModule, SavedModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

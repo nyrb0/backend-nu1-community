@@ -10,10 +10,6 @@ export class PostDto {
   @IsString()
   description?: string;
 
-  @IsOptional()
-  @IsString()
-  createdAt?: string;
-
   @IsInt()
   @IsOptional()
   views: number = 0;
@@ -45,24 +41,12 @@ export class UpdatePublicationDto {
   @IsString()
   description?: string;
 
-  @IsOptional()
-  @IsInt()
-  likes?: number;
+  // @IsString({ each: true })
+  // @IsArray()
+  // @IsString()
+  // imageUrl?: string;
 
-  @IsOptional()
-  @IsInt()
-  views?: number;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  imageUrl?: string[];
-
-  @IsOptional()
-  @IsInt()
-  commentsCount?: number;
-
-  @IsOptional()
   @IsEnum(Visibility)
-  visibility?: Visibility;
+  @IsOptional()
+  visibility?: Visibility = Visibility.PUBLIC;
 }

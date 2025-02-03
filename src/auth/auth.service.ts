@@ -102,9 +102,9 @@ export class AuthService {
   isAuth(req: Request) {
     const token = req.cookies[this.REFRESH_TOKEN_NAME];
     if (token) {
-      return { ok: true };
+      return true;
     } else {
-      return { ok: false };
+      return false;
     }
   }
 }

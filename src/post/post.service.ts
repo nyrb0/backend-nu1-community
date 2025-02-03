@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { PostDto } from './dto/post.dto';
+import { PostDto, UpdatePublicationDto } from './dto/post.dto';
 import { FilesService } from 'src/services/files.service';
 
 @Injectable()
@@ -23,6 +23,7 @@ export class PostService {
             identification: true,
             name: true,
             lastName: true,
+            avatarUrl: true,
           },
         },
         likes: {
@@ -72,6 +73,42 @@ export class PostService {
             mentions: true,
           },
         },
+      },
+    });
+  }
+
+  async postUpdate(dto: UpdatePublicationDto, userId: string, publicationId) {
+    if (!dto && Object.keys(dto).length === 0) {
+      throw new BadRequestException('DTO is empty');
+    }
+
+    const existingPost = await this.prisma.publication.findUnique({
+      where: { id: publicationId },
+    });
+
+    if (!existingPost) {
+      throw new NotFoundException('Publication not found');
+    }
+
+    if (existingPost.userId !== userId) {
+      throw new ForbiddenException('You are not the owner of this publication');
+    }
+
+    return this.prisma.publication.update({
+      where: {
+        id: publicationId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+  }
+
+  async deletePost(userId: string, publicationId) {
+    return this.prisma.publication.delete({
+      where: {
+        id: publicationId,
+        userId,
       },
     });
   }
