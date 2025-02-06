@@ -15,7 +15,6 @@ export class SavedService {
         });
         return { message: 'Saved count updated', count: savedCount };
     }
-
     async savedPost(userId: string, publicationId: string) {
         try {
             await this.prisma.saved.create({
@@ -46,7 +45,6 @@ export class SavedService {
             },
         });
     }
-
     async hasSavedUserPost(userId: string, publicationId: string) {
         const isSaved = await this.prisma.saved.findFirst({
             where: { userId, publicationId },

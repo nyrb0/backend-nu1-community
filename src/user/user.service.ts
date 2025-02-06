@@ -7,66 +7,66 @@ import { FilesService } from 'src/services/files.service';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly filesService: FilesService,
-  ) {}
+    constructor(
+        private prisma: PrismaService,
+        private readonly filesService: FilesService,
+    ) {}
 
-  getById({ id }: { id: string }) {
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
-  }
-
-  async isUsername(username: string) {
-    return this.prisma.user.findUnique({ where: { username } });
-  }
-  async addRefreshTokenCookie() {
-    return;
-  }
-  async create(dto: AuthDto) {
-    const data = {
-      ...dto,
-      email: '',
-      password: await hash(dto.password),
-    };
-
-    return this.prisma.user.create({
-      data,
-    });
-  }
-
-  async update(userId: string, dto: UserDtoUpdate, file?: Express.Multer.File) {
-    const user = await this.getById({ id: userId });
-
-    if (!user) {
-      throw new BadRequestException('User not found');
+    getById({ id }: { id: string }) {
+        return this.prisma.user.findUnique({
+            where: { id },
+        });
     }
 
-    let passwordHash = user.password;
-    if (dto?.password && user.password !== dto.password) {
-      passwordHash = await hash(dto.password);
+    async isUsername(username: string) {
+        return this.prisma.user.findUnique({ where: { username } });
+    }
+    async addRefreshTokenCookie() {
+        return;
+    }
+    async create(dto: AuthDto) {
+        const data = {
+            ...dto,
+            email: '',
+            password: await hash(dto.password),
+        };
+
+        return this.prisma.user.create({
+            data,
+        });
     }
 
-    let avatarUrl = user.avatarUrl;
-    if (file) {
-      avatarUrl = `${Date.now()}-${file.originalname}`;
-      await this.filesService.upload(avatarUrl, file.buffer);
+    async update(userId: string, dto: UserDtoUpdate, file?: Express.Multer.File) {
+        const user = await this.getById({ id: userId });
 
-      if (user.avatarUrl) {
-        await this.filesService.delete(user.avatarUrl);
-      }
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        let passwordHash = user.password;
+        if (dto?.password && user.password !== dto.password) {
+            passwordHash = await hash(dto.password);
+        }
+
+        let avatarUrl = user.avatarUrl;
+        if (file) {
+            avatarUrl = `${Date.now()}-${file.originalname}`;
+            await this.filesService.upload(avatarUrl, file.buffer);
+
+            if (user.avatarUrl) {
+                await this.filesService.delete(user.avatarUrl);
+            }
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...updateUser } = await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                ...dto,
+                avatarUrl,
+                password: passwordHash,
+            },
+        });
+
+        return updateUser;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...updateUser } = await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        ...dto,
-        avatarUrl,
-        password: passwordHash,
-      },
-    });
-
-    return updateUser;
-  }
 }

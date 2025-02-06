@@ -59,6 +59,13 @@ export class PostController {
         return this.postService.getAllLikePosts(userId);
     }
 
+    @Auth()
+    @HttpCode(200)
+    @Get('saves')
+    async getAllSavesPost(@CurrentUser('id') userId: string) {
+        return this.postService.getAllLikePosts(userId);
+    }
+
     @HttpCode(200)
     @Patch(':publicationId')
     @Auth()
