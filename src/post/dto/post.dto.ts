@@ -2,51 +2,54 @@ import { Visibility } from '@prisma/client';
 import { IsArray, IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class PostDto {
-  @IsOptional()
-  @IsString()
-  title?: string;
+    @IsOptional()
+    @IsString()
+    title?: string;
 
-  @IsOptional()
-  @IsString()
-  description?: string;
+    @IsOptional()
+    @IsString()
+    description?: string;
 
-  @IsInt()
-  @IsOptional()
-  views: number = 0;
+    @IsInt()
+    @IsOptional()
+    views: number = 0;
 
-  // @IsString({ each: true })
-  // @IsArray()
-  // @IsString()
-  // imageUrl: string;
+    // @IsString({ each: true })
+    // @IsArray()
+    // @IsString()
+    // imageUrl: string;
 
-  @IsInt()
-  @IsOptional()
-  commentsCount: number = 0;
+    @IsInt()
+    @IsOptional()
+    commentsCount: number = 0;
 
-  @IsEnum(Visibility)
-  @IsOptional()
-  visibility: Visibility = Visibility.PUBLIC;
+    @IsEnum(Visibility)
+    @IsOptional()
+    visibility: Visibility = Visibility.PUBLIC;
 
-  @IsArray()
-  @IsOptional()
-  mentions?: string[];
+    @IsArray()
+    @IsOptional()
+    mentions?: string[];
 }
 
 export class UpdatePublicationDto {
-  @IsOptional()
-  @IsString()
-  title?: string;
+    @IsString()
+    userId: string;
 
-  @IsOptional()
-  @IsString()
-  description?: string;
+    @IsOptional()
+    @IsString()
+    title?: string;
 
-  // @IsString({ each: true })
-  // @IsArray()
-  // @IsString()
-  // imageUrl?: string;
+    @IsOptional()
+    @IsString()
+    description?: string;
 
-  @IsEnum(Visibility)
-  @IsOptional()
-  visibility?: Visibility = Visibility.PUBLIC;
+    // @IsString({ each: true })
+    // @IsArray()
+    // @IsString()
+    // imageUrl?: string;
+
+    @IsEnum(Visibility)
+    @IsOptional()
+    visibility?: Visibility = Visibility.PUBLIC;
 }

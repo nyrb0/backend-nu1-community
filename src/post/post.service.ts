@@ -10,7 +10,11 @@ export class PostService {
         private readonly filesService: FilesService,
     ) {}
 
-    async getAll(userId: string) {
+    async getAll(username: string) {
+        const { id: userId } = await this.prisma.user.findUnique({
+            where: { username },
+        });
+
         const posts = await this.prisma.publication.findMany({
             where: {
                 userId,
@@ -47,7 +51,7 @@ export class PostService {
         }));
     }
 
-    async postCreate(dto: PostDto, userId: string, file?: Express.Multer.File) {
+    async postCreate(dto: PostDto, username: string, file?: Express.Multer.File) {
         let postImage;
         if (file) {
             postImage = `${Date.now()}-${file.originalname}`;
@@ -58,7 +62,7 @@ export class PostService {
                 ...dto,
                 imageUrl: postImage,
                 user: {
-                    connect: { id: userId },
+                    connect: { username },
                 },
                 mentions: {
                     create: (dto.mentions ?? []).map((username) => ({
@@ -82,7 +86,7 @@ export class PostService {
         });
     }
 
-    async postUpdate(dto: UpdatePublicationDto, userId: string, publicationId) {
+    async postUpdate(dto: UpdatePublicationDto, publicationId, username) {
         if (!dto && Object.keys(dto).length === 0) {
             throw new BadRequestException('DTO is empty');
         }
@@ -92,13 +96,11 @@ export class PostService {
         });
 
         if (!existingPost) {
-            throw new NotFoundException('Publication not found');
+            throw new NotFoundException('Publication not found or not owner the post');
         }
-
-        if (existingPost.userId !== userId) {
+        if (existingPost.userId !== username) {
             throw new ForbiddenException('You are not the owner of this publication');
         }
-
         return this.prisma.publication.update({
             where: {
                 id: publicationId,

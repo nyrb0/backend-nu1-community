@@ -25,11 +25,11 @@ export class PostController {
     constructor(private readonly postService: PostService) {}
 
     @HttpCode(200)
-    @Post()
+    @Post(':username')
     @Auth()
     @UseInterceptors(FileInterceptor('imageUrl'))
     createPost(
-        @CurrentUser('id') userId: string,
+        @Param('username') username: string,
         @Body() dto: PostDto,
         @UploadedFile(
             new ParseFilePipe({
@@ -42,27 +42,27 @@ export class PostController {
         )
         file?: Express.Multer.File,
     ) {
-        return this.postService.postCreate(dto, userId, file);
+        return this.postService.postCreate(dto, username, file);
     }
 
     @Auth()
     @HttpCode(200)
-    @Get()
-    async getAll(@CurrentUser('id') userId: string) {
-        return this.postService.getAll(userId);
+    @Get(':username')
+    async getAll(@Param('username') username: string) {
+        return this.postService.getAll(username);
     }
 
     @Auth()
     @HttpCode(200)
-    @Get('likes')
-    async getAllLikesPost(@CurrentUser('id') userId: string) {
+    @Get('likes/:userId')
+    async getAllLikesPost(@Param('userId') userId: string) {
         return this.postService.getAllLikePosts(userId);
     }
 
     @Auth()
     @HttpCode(200)
-    @Get('saves')
-    async getAllSavesPost(@CurrentUser('id') userId: string) {
+    @Get('saves/:userId')
+    async getAllSavesPost(@Param('userId') userId: string) {
         return this.postService.getAllLikePosts(userId);
     }
 
@@ -70,12 +70,12 @@ export class PostController {
     @Patch(':publicationId')
     @Auth()
     async updatePost(
-        @CurrentUser('id') userId: string,
         @Body() dto: UpdatePublicationDto,
         @Param('publicationId') publicationId: string,
+        @CurrentUser('username') username: string,
     ) {
         if (!publicationId) throw new BadRequestException('publicationId is empty');
-        return this.postService.postUpdate(dto, userId, publicationId);
+        return this.postService.postUpdate(dto, publicationId, username);
     }
 
     @Auth()

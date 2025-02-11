@@ -18,6 +18,15 @@ export class UserService {
         });
     }
 
+    getByUserName(username, username1) {
+        let isOwner = false;
+        if (username1 === username) isOwner = true;
+        const data = this.prisma.user.findUnique({
+            where: { username },
+        });
+        return { ...data, isOwner };
+    }
+
     async isUsername(username: string) {
         return this.prisma.user.findUnique({ where: { username } });
     }
