@@ -10,7 +10,7 @@ export class PostService {
         private readonly filesService: FilesService,
     ) {}
 
-    async getAll(username: string) {
+    async getAllUserPosts(username: string) {
         const { id: userId } = await this.prisma.user.findUnique({
             where: { username },
         });
@@ -46,8 +46,44 @@ export class PostService {
 
         return posts.map((post) => ({
             ...post,
-            liked: post.likes.length > 0,
-            saved: post.saves.length > 0,
+            liked: Boolean(post.likes.length),
+            saved: Boolean(post.saves.length),
+        }));
+    }
+
+    async getAllPosts(userId: string, skip: number, take: number) {
+        const posts = await this.prisma.publication.findMany({
+            skip,
+            take,
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        identification: true,
+                        name: true,
+                        lastName: true,
+                        avatarUrl: true,
+                    },
+                },
+                likes: {
+                    where: { userId },
+                    select: { id: true },
+                },
+                saves: {
+                    where: { userId },
+                    select: { id: true },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        return posts.map((post) => ({
+            ...post,
+            liked: Boolean(post.likes.length),
+            saved: Boolean(post.saves.length),
         }));
     }
 
@@ -155,8 +191,8 @@ export class PostService {
         });
         return posts.map((post) => ({
             ...post,
-            liked: post.likes.length > 0,
-            saved: post.saves.length > 0,
+            liked: Boolean(post.likes.length),
+            saved: Boolean(post.saves.length),
         }));
     }
 
@@ -195,8 +231,8 @@ export class PostService {
         });
         return posts.map((post) => ({
             ...post,
-            liked: post.likes.length > 0,
-            saved: post.saves.length > 0,
+            liked: Boolean(post.likes.length),
+            saved: Boolean(post.saves.length),
         }));
     }
 }

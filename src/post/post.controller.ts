@@ -9,8 +9,10 @@ import {
     MaxFileSizeValidator,
     Param,
     ParseFilePipe,
+    ParseIntPipe,
     Patch,
     Post,
+    Query,
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
@@ -47,9 +49,20 @@ export class PostController {
 
     @Auth()
     @HttpCode(200)
-    @Get(':username')
-    async getAll(@Param('username') username: string) {
-        return this.postService.getAll(username);
+    @Get('user/:username')
+    async getAllUser(@Param('username') username: string) {
+        return this.postService.getAllUserPosts(username);
+    }
+    @Auth()
+    @HttpCode(200)
+    @Get('getall')
+    async getAll(
+        @CurrentUser('id') userId: string,
+        @Query('skip', ParseIntPipe) skip: number = 0,
+        @Query('take', ParseIntPipe) take: number = 1,
+    ) {
+        take = Math.min(take, 50);
+        return this.postService.getAllPosts(userId, skip, take);
     }
 
     @Auth()
