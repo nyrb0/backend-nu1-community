@@ -27,11 +27,11 @@ export class PostController {
     constructor(private readonly postService: PostService) {}
 
     @HttpCode(200)
-    @Post(':username')
+    @Post('')
     @Auth()
     @UseInterceptors(FileInterceptor('imageUrl'))
     createPost(
-        @Param('username') username: string,
+        @CurrentUser('username') username: string,
         @Body() dto: PostDto,
         @UploadedFile(
             new ParseFilePipe({

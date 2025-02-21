@@ -46,6 +46,7 @@ export class PostService {
 
         return posts.map((post) => ({
             ...post,
+            isOwner: post.userId === userId,
             liked: Boolean(post.likes.length),
             saved: Boolean(post.saves.length),
         }));
@@ -82,6 +83,7 @@ export class PostService {
 
         return posts.map((post) => ({
             ...post,
+            isOwner: post.userId === userId,
             liked: Boolean(post.likes.length),
             saved: Boolean(post.saves.length),
         }));
@@ -93,7 +95,7 @@ export class PostService {
             postImage = `${Date.now()}-${file.originalname}`;
             await this.filesService.upload(postImage, file.buffer);
         }
-        return await this.prisma.publication.create({
+        const post = await this.prisma.publication.create({
             data: {
                 ...dto,
                 imageUrl: postImage,
@@ -120,6 +122,8 @@ export class PostService {
                 },
             },
         });
+
+        return { ...post, isOwner: post.user.username === username };
     }
 
     async postUpdate(dto: UpdatePublicationDto, publicationId, username) {
@@ -137,7 +141,7 @@ export class PostService {
         if (existingPost.userId !== username) {
             throw new ForbiddenException('You are not the owner of this publication');
         }
-        return this.prisma.publication.update({
+        const post = this.prisma.publication.update({
             where: {
                 id: publicationId,
             },
@@ -145,6 +149,8 @@ export class PostService {
                 ...dto,
             },
         });
+
+        return post;
     }
 
     async deletePost(userId: string, publicationId) {
